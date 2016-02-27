@@ -38,13 +38,23 @@
 Phaser.Plugin.PNCAdventure = function(game, parent) {
 	Phaser.Plugin.call(this, game, parent);
 	console.log('Point and click adventure plugin initialised');
+	this.scenes = {};
 };
 
 Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
 Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
 
-Phaser.Plugin.PNCAdventure.prototype.addScene = function (key, switchTo) {
-	var room = new Phaser.Plugin.PNCAdventure.Scene();
-	this.game.state.add('PMC.' + key, room, switchTo);
-	return room;
+/**
+ * @param {String} key - the name to refer to this scene
+ * @param {Object} sceneDefinition - JSON object with scene data
+ * @param {boolean} switchTo - whether to switch to this scene immediately or not
+ */
+Phaser.Plugin.PNCAdventure.prototype.addScene = function (key, sceneDefinition, switchTo) {
+	if (this.scenes[key] !== undefined) {
+		console.warn('Scene ' + key + ' already exists');
+		return false;
+	}
+	this.scenes[key] = new Phaser.Plugin.PNCAdventure.Scene(key, sceneDefinition);
+	this.game.state.add('PMC.' + key, this.scenes[key], switchTo);
+	return this.scenes[key];
 }
