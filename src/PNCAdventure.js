@@ -32,6 +32,7 @@
 'use strict';
 
 /**
+ * constructor
  * @param {Object} game - The Phaser game instance
  * @param {Object} parent - the plugin owner, eg Phaser.PluginManager
  */
@@ -45,9 +46,11 @@ Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
 Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
 
 /**
+ * addScene - adds a new scene to the game
  * @param {String} key - the name to refer to this scene
  * @param {Object} sceneDefinition - JSON object with scene data
  * @param {boolean} switchTo - whether to switch to this scene immediately or not
+ * @return {Phaser.Plugin.PNCAdventure.Scene} the resulting scene state object
  */
 Phaser.Plugin.PNCAdventure.prototype.addScene = function (key, sceneDefinition, switchTo) {
 	if (this.scenes[key] !== undefined) {

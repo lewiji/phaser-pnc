@@ -1,6 +1,8 @@
 /**
  * Scene object extends the Phaser.State object and represent a single scene in which the player can
  * move around and interact
+ * @param {String} key - the name which refers to this scene
+ * @param {Object} scenedefinition - object containing scene data
  */
 Phaser.Plugin.PNCAdventure.Scene = function (key, sceneDefinition) {
 	this.key = key;
@@ -27,6 +29,9 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 	}
 };
 
+/**
+ * initBackground - create the background sprite
+ */
 Phaser.Plugin.PNCAdventure.Scene.prototype.initBackground = function () {
 	this.game.add.sprite(0, 0, this.key + 'bg');
 };
