@@ -15,8 +15,8 @@ pncgame.prototype = {
 
 		// adds actor using PlayerActor prototype which adds listeners for movement input
 		var actor = this.game.pncPlugin.addActor(room, {
-				x: 0,
-				y: 0,
+				x: 250,
+				y: 150,
 				image: 'player',
 				type: Phaser.Plugin.PNCAdventure.PlayerActor
 		});
