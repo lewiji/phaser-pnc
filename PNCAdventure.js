@@ -41,7 +41,7 @@
 		console.log('Point and click adventure plugin initialised');
 	};
 
-	Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.Prototype);
+	Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
 	Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
 
 	Phaser.Plugin.PNCAdventure.prototype.configure = function(options) {
