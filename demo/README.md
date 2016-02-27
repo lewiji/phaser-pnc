@@ -1,6 +1,9 @@
 Adventure game plugin demo project
 ==================================
 
+A simple demo project to gradually test out the API of the plugin. Will be very rough until the
+plugin design matures!
+
 DISCLAIMER
 ----------
 
