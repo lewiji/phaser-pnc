@@ -1,0 +1,27 @@
+{
+  "name": "phaser-pnc",
+  "homepage": "https://github.com/lewispollard/phaser-pnc",
+  "authors": [
+    "HTML5GameDevs"
+  ],
+  "description": "Phaser Point and Click Adventure Plugin",
+  "main": "PNCAdventure",
+  "keywords": [
+    "phaser",
+    "adventure",
+    "point",
+    "click",
+    "game"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser": "^2.4.6"
+  }
+}
