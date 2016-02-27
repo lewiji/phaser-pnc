@@ -29,8 +29,6 @@
  * @license      {@link http://opensource.org/licenses/MIT}
  */
 
-'use strict';
-
 /**
  * constructor
  * @param {Object} game - The Phaser game instance
@@ -40,10 +38,15 @@ Phaser.Plugin.PNCAdventure = function(game, parent) {
 	Phaser.Plugin.call(this, game, parent);
 	console.log('Point and click adventure plugin initialised');
 	this.scenes = {};
+	this.initSignals();
 };
 
 Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
 Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
+
+Phaser.Plugin.PNCAdventure.prototype.initSignals = function () {
+	this.playerMovementSignal = new Phaser.Signal();	
+};
 
 /**
  * addScene - adds a new scene to the game
@@ -60,4 +63,12 @@ Phaser.Plugin.PNCAdventure.prototype.addScene = function (key, sceneDefinition, 
 	this.scenes[key] = new Phaser.Plugin.PNCAdventure.Scene(key, sceneDefinition);
 	this.game.state.add('PMC.' + key, this.scenes[key], switchTo);
 	return this.scenes[key];
-}
+};
+
+Phaser.Plugin.PNCAdventure.prototype.addActor = function (scene, actorDefinition) {
+	return scene.initActor(actorDefinition);
+};
+
+Phaser.Plugin.PNCAdventure.prototype.addPlayerActor = function (scene, actorDefinition) {
+	return scene.initPlayerActor(actorDefinition);
+};
