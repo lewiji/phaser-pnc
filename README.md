@@ -2,7 +2,7 @@ Phaser Adventure Game Plugin Design Document
 ============================================
 Introduction
 ------------
-Plugin to simplify development of traditional point and click adventure games, in the style of Lucasarts, Sierra, etc, in the Phaser/Lazer framework.
+Plugin to simplify development of traditional point and click adventure games, in the style of Lucasarts, Sierra, etc, in the Phaser/Lazer framework. Open to all collaborative effort, I think there are enough of us oldies to remember the golden age of adventure games :)
 
 [From this thread on HTML5 Game Devs forum](http://www.html5gamedevs.com/topic/3612-anyone-working-on-a-point-and-click-adventure)
 
