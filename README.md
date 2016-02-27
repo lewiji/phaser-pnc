@@ -6,6 +6,8 @@ Plugin to simplify development of traditional point and click adventure games, i
 
 [From this thread on HTML5 Game Devs forum](http://www.html5gamedevs.com/topic/3612-anyone-working-on-a-point-and-click-adventure)
 
+![Image of 4 Classic Adventure Games](/img/pnc.png)
+
 Design Considerations
 ---------------------
 Features typical (but not necessarily definitive) of game style:
