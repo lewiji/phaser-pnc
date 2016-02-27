@@ -43,18 +43,4 @@
 
 	Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
 	Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
-
-	Phaser.Plugin.PNCAdventure.prototype.configure = function(options) {
-		if (options) {
-			for (var property in options) {
-				if (this.settings.hasOwnProperty(property)) {
-					this.settings[property] = options[property];
-				}
-			}
-		}
-	};
-
-	Phaser.Plugin.PNCAdventure.prototype.start = function() {
-
-	};
 }(Phaser));
