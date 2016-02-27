@@ -5,7 +5,7 @@
     "HTML5GameDevs"
   ],
   "description": "Phaser Point and Click Adventure Plugin",
-  "main": "PNCAdventure",
+  "main": "src/PNCAdventure.js",
   "keywords": [
     "phaser",
     "adventure",
