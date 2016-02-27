@@ -7,5 +7,6 @@ pncgame.prototype = {
 
 	},
 	create: function () {
+		var room = this.game.pncPlugin.addRoom('lobby', true);
 	}
 }

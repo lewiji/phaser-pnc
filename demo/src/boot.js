@@ -8,6 +8,6 @@ boot.prototype = {
 	},
 	create: function () {
 		this.game.state.start("Preload");
-		this.game.plugin=this.game.plugins.add(Phaser.Plugin.PNCAdventure);
+		this.game.pncPlugin = this.game.plugins.add(Phaser.Plugin.PNCAdventure);
 	}
 }

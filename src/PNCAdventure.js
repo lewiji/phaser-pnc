@@ -29,18 +29,22 @@
  * @license      {@link http://opensource.org/licenses/MIT}
  */
 
-(function(Phaser) {
-	'use strict';
+'use strict';
 
-	/**
-	 * @param {Object} game - The Phaser game instance
-	 * @param {Object} parent - the plugin owner, eg Phaser.PluginManager
-	 */
-	Phaser.Plugin.PNCAdventure = function(game, parent) {
-		Phaser.Plugin.call(this, game, parent);
-		console.log('Point and click adventure plugin initialised');
-	};
+/**
+ * @param {Object} game - The Phaser game instance
+ * @param {Object} parent - the plugin owner, eg Phaser.PluginManager
+ */
+Phaser.Plugin.PNCAdventure = function(game, parent) {
+	Phaser.Plugin.call(this, game, parent);
+	console.log('Point and click adventure plugin initialised');
+};
 
-	Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
-	Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
-}(Phaser));
+Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
+Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
+
+Phaser.Plugin.PNCAdventure.prototype.addRoom = function (key, switchTo) {
+	var room = new Phaser.Plugin.PNCAdventure.Room();
+	this.game.state.add('PMC.' + key, room, switchTo);
+	return room;
+}
