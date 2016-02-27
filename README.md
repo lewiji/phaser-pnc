@@ -54,7 +54,7 @@ Constraints
 
 Goals
 -----
-* A flexible enough plugin that it can be used by experienced programmers and novices alike - sort of how Twine can be used in a fully graphical way or scripted entirely by hand using Twee
+* A flexible enough plugin that it can be used by experienced programmers and novices alike
 
 * Ideally allow for art, writing and coding to be as easy to integrate as possible while remaining separate processes
 
