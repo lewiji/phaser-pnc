@@ -28,7 +28,7 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.preload = function () {
 };
 
 Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
-	console.log('Scene initialised');
+	console.debug('Scene initialised');
 	this.createSceneHierarchy();
 	if (this.sceneDefinition.bg) {
 		this.initBackground();
@@ -38,17 +38,31 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 			this.addActorToScene(this.actors[i]);
 		}
 	}
+
+	if (Phaser.Plugin.PNCAdventure.DebugNavmesh) {
+		this.navmeshTool = new Phaser.Plugin.PNCAdventure.DebugNavmesh(game);
+		this.addLayer('debug');
+	}
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.addLayer = function (name) {
+	if (this.layers === undefined) {
+		this.layers = {};
+	} else if (this.layers[name] !== undefined) {
+		console.error('Layer ' + name + ' already exists');
+		return;
+	}
+	console.debug('Layer ' + name + ' added');
+	this.layers[name] = this.game.add.group();
+	this.sceneGroup.add(this.layers[name]);
+	return this.layers[name];
 };
 
 Phaser.Plugin.PNCAdventure.Scene.prototype.createSceneHierarchy = function () {
 	this.sceneGroup = this.game.add.group();
 
-	this.layers = {};
-	this.layers.background = this.game.add.group();
-	this.layers.actors = this.game.add.group();
-
-	this.sceneGroup.add(this.layers.background);
-	this.sceneGroup.add(this.layers.actors);
+	this.addLayer('background');
+	this.addLayer('actors');
 };
 
 /**
@@ -58,11 +72,17 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.initBackground = function () {
 	this.background = this.game.add.sprite(0, 0, this.key + 'bg');
 	this.layers.background.add(this.background);
 	this.background.inputEnabled = true;
-	this.background.events.onInputUp.add(function (sprite, pointer) {
-		this.game.pncPlugin.playerMovementSignal.dispatch(pointer);
+	this.background.events.onInputUp.add(function (sprite, pointer, g) {
+		this.game.pncPlugin.signals.sceneTappedSignal.dispatch(pointer);
 	}, this);
 };
 
+/**
+ * initialises an actor into the scene. This does not directly create an actor object.
+ * If scene is active, it is added immediately. If inactive, adds to actors array to be added later.
+ * @param  {[type]} actorDefinition [description]
+ * @return {[type]}                 [description]
+ */
 Phaser.Plugin.PNCAdventure.Scene.prototype.initActor = function (actorDefinition) {
 	// if this state is not active defer actor creation until it is
 	if (this.state === undefined) {
@@ -73,6 +93,10 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.initActor = function (actorDefinition
 	
 };
 
+/**
+ * Creates the actor object and adds to the actors layer.
+ * @param {Object} actorDefinition - the actor definition data
+ */
 Phaser.Plugin.PNCAdventure.Scene.prototype.addActorToScene = function (actorDefinition) {
 	if (actorDefinition.type === undefined) {
 		this.layers.actors.add(new Phaser.Plugin.PNCAdventure.Actor(this.game, actorDefinition));
