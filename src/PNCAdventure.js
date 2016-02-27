@@ -43,8 +43,8 @@ Phaser.Plugin.PNCAdventure = function(game, parent) {
 Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
 Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
 
-Phaser.Plugin.PNCAdventure.prototype.addRoom = function (key, switchTo) {
-	var room = new Phaser.Plugin.PNCAdventure.Room();
+Phaser.Plugin.PNCAdventure.prototype.addScene = function (key, switchTo) {
+	var room = new Phaser.Plugin.PNCAdventure.Scene();
 	this.game.state.add('PMC.' + key, room, switchTo);
 	return room;
 }
