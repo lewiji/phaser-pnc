@@ -39,10 +39,34 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 		}
 	}
 
+	if (this.sceneDefinition.pathPolys) {
+		this.pathPolys = this.sceneDefinition.pathPolys;
+		this.loadJSONPolyData(this.sceneDefinition.pathPolys);
+
+	}
+
 	if (Phaser.Plugin.PNCAdventure.DebugNavmesh) {
 		this.navmeshTool = new Phaser.Plugin.PNCAdventure.DebugNavmesh(game);
 		this.addLayer('debug');
+		if (this.sceneDefinition.pathPolys) {
+			this.navmeshTool.loadJSONPolyData(this.sceneDefinition.pathPolys);
+		}
 	}
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.loadJSONPolyData = function (data) {
+	this.navmesh = [];
+	for (var i = 0; i < data.length; i++) {
+		if (data[i]._points) {
+			data[i].points = data[i]._points;
+			data[i]._points = null;
+		}
+		this.navmesh.push(new Phaser.Polygon(data[i].points));
+	}
+	if (!data.length && data[0].points) {
+		return;
+	}
+	
 };
 
 Phaser.Plugin.PNCAdventure.Scene.prototype.addLayer = function (name) {
@@ -73,7 +97,7 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.initBackground = function () {
 	this.layers.background.add(this.background);
 	this.background.inputEnabled = true;
 	this.background.events.onInputUp.add(function (sprite, pointer, g) {
-		this.game.pncPlugin.signals.sceneTappedSignal.dispatch(pointer);
+		this.game.pncPlugin.signals.sceneTappedSignal.dispatch(pointer, this.navmesh);
 	}, this);
 };
 
