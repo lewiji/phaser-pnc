@@ -41,13 +41,15 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 				data[i].points = data[i]._points;
 				data[i]._points = null;
 			}
-			this.finishedPolys.push(new Phaser.Polygon(data[i].points))
+			var poly = new Phaser.Polygon(data[i].points);
+			poly.centroid = data[i].centroid;
+			this.finishedPolys.push(poly);
 		}
 		if (!data.length && data[0].points) {
 			return;
 		}
 		
-		this.drawFinishedPolys();
+		this.drawDebugLayer();
 	},
 	loadJSONPolyDataFromElement: function () {
 		this.loadJSONPolyData(this.elOutput.value);
@@ -73,8 +75,7 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 			this.enabled = true;
 			this.graphics.visible = true;
 			this.graphics.alpha = 1;
-			this.drawFinishedPolys();
-			this.drawCurrentPoints();
+			this.drawDebugLayer();
 		}
 		
 	},
@@ -85,8 +86,7 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 			this.finishedPolys.pop();
 		}
 		this.graphics.clear();
-		this.drawFinishedPolys();
-		this.drawCurrentPoints();
+		this.drawDebugLayer();
 	},
 	initPoints: function () {
 		this.currentPoints = [];
@@ -101,8 +101,7 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 		this.game.pncPlugin.signals.sceneTappedSignal.halt();
 		console.debug('Draw point');
 		this.currentPoints.push({x: e.x, y: e.y});
-		this.drawFinishedPolys();
-		this.drawCurrentPoints();
+		this.drawDebugLayer();
 	},
 	drawCurrentPoints: function () {
 		for (var i = 0; i < this.currentPoints.length; i++) {
@@ -124,13 +123,37 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 
 		var poly = new Phaser.Polygon();
 		poly.setTo(this.currentPoints);
+		poly.centroid = this.getPolygonCentroid(poly);
 
 		this.finishedPolys.push(poly);	
 
 		this.clearPoints();
-		this.drawFinishedPolys();
+		this.drawDebugLayer();
 
 		this.game.pncPlugin.signals.navMeshUpdatedSignal.dispatch(this.finishedPolys);
+	},
+	getPolygonCentroid: function(poly) {
+		var x = 0,
+	        y = 0,
+	        i,
+	        j,
+	        f,
+	        point1,
+	        point2;
+
+	    var points = poly._points;
+
+	    for (i = 0, j = points.length - 1; i < points.length; j = i, i += 1) {
+	        point1 = points[i];
+	        point2 = points[j];
+	        f = point1.x * point2.y - point2.x * point1.y;
+	        x += (point1.x + point2.x) * f;
+	        y += (point1.y + point2.y) * f;
+	    }
+
+	    f = poly.area * 6;
+
+	    return new Phaser.Point(Math.abs(x / f), Math.abs(y / f));
 	},
 	drawFinishedPolys: function () {
 		for (var i = 0; i < this.finishedPolys.length; i++) {
@@ -139,5 +162,26 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 			this.graphics.endFill();
 		}
 		this.elOutput.value = this.welcomeString + JSON.stringify(this.finishedPolys);
+	},
+	drawPolyPoints: function () {
+		for (var i = 0; i < this.finishedPolys.length; i++) {
+			for (var j = 0; j < this.finishedPolys[i].points.length; j++) {
+				this.graphics.beginFill(0xFF0055);
+				this.graphics.drawCircle(this.finishedPolys[i].points[j].x, this.finishedPolys[i].points[j].y, 3);
+				this.graphics.endFill();
+			}
+
+			if (this.finishedPolys[i].centroid) {
+				this.graphics.beginFill(0xFF0055);
+				this.graphics.drawCircle(this.finishedPolys[i].centroid.x, this.finishedPolys[i].centroid.y, 4);
+				this.graphics.endFill();
+			}		
+		}
+	},
+	drawDebugLayer: function () {
+		this.graphics.clear();
+		this.drawFinishedPolys();
+		this.drawPolyPoints();
+		this.drawCurrentPoints();
 	}
 };
