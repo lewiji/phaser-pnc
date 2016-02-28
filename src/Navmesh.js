@@ -39,27 +39,7 @@ Phaser.Plugin.PNCAdventure.NavMesh.prototype.createPolygon = function (points) {
 	console.log(this.grid.getNumPolygons());
 };
 
-Phaser.Plugin.PNCAdventure.NavMesh.prototype.getPolygonCentroid = function(poly) {
-	var x = 0,
-        y = 0,
-        i,
-        j,
-        f,
-        point1,
-        point2;
 
-    for (i = 0, j = poly.nodes.length - 1; i < poly.length; j = i, i += 1) {
-        point1 = poly.nodes[i];
-        point2 = poly.nodes[j];
-        f = point1.x * point2.y - point2.x * point1.y;
-        x += (point1.x + point2.x) * f;
-        y += (point1.y + point2.y) * f;
-    }
-
-    f = poly.area * 6;
-
-    return new Point(x / f, y / f);
-};
 
 Phaser.Plugin.PNCAdventure.NavMesh.prototype.createPoint = function (phaserPoint, id) {
 	var node = this.grid.addNode(phaserPoint.x, phaserPoint.y, {id: id});

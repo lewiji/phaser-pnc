@@ -155,13 +155,54 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 
 	    return new Phaser.Point(Math.abs(x / f), Math.abs(y / f));
 	},
+	/**
+	 * Calculate graph of centre points of all polys. INEFFICIENT NEEDS SOME WIZARDRY
+	 * @return {[type]} [description]
+	 */
+	graphCentroids: function () {
+		for (var i = 0; i < this.finishedPolys.length; i++) {
+			var thisPoly = this.finishedPolys[i];
+			thisPoly.connectedPolys = [];
+			for (var j = 0; j < this.finishedPolys.length; j++) {
+				if (j !== i) {
+					var testPoly = this.finishedPolys[j];
+					var intersects = this.testPolyPointIntersection(thisPoly, testPoly);
+					if (intersects) {
+						thisPoly.connectedPolys.push(j);
+					}
+				}
+			}
+		}
+	},
+	testPolyPointIntersection: function (poly1, poly2) {
+		for (var i = 0; i < poly2.points.length; i++) {
+			if (poly1.contains(poly2.points[i].x, poly2.points[i].y)) {
+				return true;
+			}
+		}
+		return false;
+	},
 	drawFinishedPolys: function () {
 		for (var i = 0; i < this.finishedPolys.length; i++) {
 			this.graphics.beginFill(0x0000FF + (0x100000 * i) - (0x001000 * i));
 			this.graphics.drawPolygon(this.finishedPolys[i].points);
 			this.graphics.endFill();
 		}
+		this.graphCentroids();
 		this.elOutput.value = this.welcomeString + JSON.stringify(this.finishedPolys);
+	},
+	drawPaths: function () {
+		this.graphics.beginFill(0xFF3300);
+		this.graphics.lineStyle(2, 0xffd900, 1);
+		for (var i = 0; i < this.finishedPolys.length; i++) {
+			var thisPoly = this.finishedPolys[i];
+			for (var j = 0; j < thisPoly.connectedPolys.length; j++) {
+				var thatPoly = this.finishedPolys[thisPoly.connectedPolys[j]];
+
+				this.graphics.moveTo(thisPoly.centroid.x, thisPoly.centroid.y);
+				this.graphics.lineTo(thatPoly.centroid.x, thatPoly.centroid.y);
+			}
+		}
 	},
 	drawPolyPoints: function () {
 		for (var i = 0; i < this.finishedPolys.length; i++) {
@@ -181,7 +222,9 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 	drawDebugLayer: function () {
 		this.graphics.clear();
 		this.drawFinishedPolys();
+		this.drawPaths();
 		this.drawPolyPoints();
 		this.drawCurrentPoints();
+
 	}
 };

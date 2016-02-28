@@ -47,7 +47,6 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 
 	if (Phaser.Plugin.PNCAdventure.DebugNavmesh) {
 		this.navmeshTool = new Phaser.Plugin.PNCAdventure.DebugNavmesh(game);
-		this.addLayer('debug');
 		if (this.sceneDefinition.pathPolys) {
 			this.navmeshTool.loadJSONPolyData(this.sceneDefinition.pathPolys);
 		}
