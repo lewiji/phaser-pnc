@@ -62,16 +62,19 @@ Phaser.Plugin.PNCAdventure.Actor.prototype.walkPath = function (path, polys, fin
 			);
 		}
 	}
-	var distance = Phaser.Math.distance(this.x, this.y, finalPoint.x, finalPoint.y);
-	if (distance != 0) {
-		this.walkingTween.to(
-			{
-				x: finalPoint.x,
-				y: finalPoint.y
-			},
-			(distance * this.averageWalkSpeed) * (1 / walkSpeed)
-		);
+	if (polys[path[path.length - 1]].contains(finalPoint)) {
+		var distance = Phaser.Math.distance(this.x, this.y, finalPoint.x, finalPoint.y);
+		if (distance != 0) {
+			this.walkingTween.to(
+				{
+					x: finalPoint.x,
+					y: finalPoint.y
+				},
+				(distance * this.averageWalkSpeed) * (1 / walkSpeed)
+			);
+		}
 	}
+	
 
 	this.walkingTween.start();
 };
