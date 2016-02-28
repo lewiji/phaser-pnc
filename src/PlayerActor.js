@@ -25,10 +25,10 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function 
 		// pathfind
 		var path = this.game.pncPlugin.navGraph.findShortestPath(this.actorPoly, this.targetPoly);
 
-		if (path.length == 0) {
+		if (path && path.length == 0) {
 			this.walkTo(pointer, 50);
 		} else {
-			this.walkPath(path, pathPolys, 50);
+			this.walkPath(path, pathPolys, pointer, 50);
 		}
 
 		console.log(path);

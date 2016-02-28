@@ -68,7 +68,7 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 			this.removeSignals();
 			Phaser.Plugin.PNCAdventure.debugMode = false;
 			this.enabled = false;
-			this.graphics.alpha = 0.3;
+			this.graphics.alpha = 0.1;
 		} else {
 			this.initSignals();
 			Phaser.Plugin.PNCAdventure.debugMode = true;
@@ -94,7 +94,7 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 	},
 	initGraphics: function () {
 		this.graphics = this.game.add.graphics(0, 0);
-		this.graphics.alpha = 0.3;
+		this.graphics.alpha = 0.1;
 	},
 	drawPoint: function (e) {
 		// prevent onInputUp signal propogation
