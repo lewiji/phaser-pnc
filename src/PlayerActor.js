@@ -11,8 +11,14 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype = Object.create(Phaser.Plugin.P
 Phaser.Plugin.PNCAdventure.PlayerActor.prototype.constructor = Phaser.Plugin.PNCAdventure.PlayerActor;
 
 Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function () {
-	 this.game.pncPlugin.signals.sceneTappedSignal.add(function (pointer) {
+	 this.game.pncPlugin.signals.sceneTappedSignal.add(function (pointer, pathPolys) {
 	 	console.debug('Movement signal received');
-	 	this.walkTo(pointer);
+	 	for (var i = 0; i < pathPolys.length; i++) {
+	 		if (pathPolys[i].contains(pointer.x, pointer.y)) {
+	 			console.log('bingo');
+	 			this.walkTo(pointer);
+	 		}
+	 	}
+	 	
 	 }, this);
 };

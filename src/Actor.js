@@ -11,7 +11,7 @@ Phaser.Plugin.PNCAdventure.Actor = function (game, actorDefinition) {
 		};
 	}
 	Phaser.Sprite.call(this, game, actorDefinition.x, actorDefinition.y, actorDefinition.image, actorDefinition.frame);
-	this.anchor.setTo(0.5, 0.5);
+	this.anchor.setTo(0.5, 0.9);
 
 	this.walkSpeed = 50;
 	this.averageWalkSpeed = 100;
