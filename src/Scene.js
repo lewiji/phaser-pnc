@@ -51,7 +51,17 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 		if (this.sceneDefinition.pathPolys) {
 			this.navmeshTool.loadJSONPolyData(this.sceneDefinition.pathPolys);
 		}
+
+		this.game.pncPlugin.signals.navMeshUpdatedSignal.add(Phaser.Plugin.PNCAdventure.Scene.prototype.setNavmeshPolys, this);
 	}
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.addNavmeshPoly = function (poly) {
+	this.navmesh.push(poly);
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.setNavmeshPolys = function (navmeshPolys) {
+	this.navmesh = navmeshPolys;
 };
 
 Phaser.Plugin.PNCAdventure.Scene.prototype.loadJSONPolyData = function (data) {

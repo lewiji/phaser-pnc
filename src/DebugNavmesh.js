@@ -17,6 +17,7 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh = function (game) {
 	}
 	this.toggleKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
 	this.toggleKey.onDown.add(Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype.toggleTool, this);
+	this.game.pncPlugin.signals.navMeshUpdatedSignal = new Phaser.Signal();
 };
 
 Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
@@ -34,16 +35,18 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 		this.undoKey.onDown.add(Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype.undo, this);
 	},
 	loadJSONPolyData: function (data) {
+		this.finishedPolys = [];
 		for (var i = 0; i < data.length; i++) {
 			if (data[i]._points) {
 				data[i].points = data[i]._points;
 				data[i]._points = null;
 			}
+			this.finishedPolys.push(new Phaser.Polygon(data[i].points))
 		}
 		if (!data.length && data[0].points) {
 			return;
 		}
-		this.finishedPolys = data;
+		
 		this.drawFinishedPolys();
 	},
 	loadJSONPolyDataFromElement: function () {
@@ -126,6 +129,8 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 
 		this.clearPoints();
 		this.drawFinishedPolys();
+
+		this.game.pncPlugin.signals.navMeshUpdatedSignal.dispatch(this.finishedPolys);
 	},
 	drawFinishedPolys: function () {
 		for (var i = 0; i < this.finishedPolys.length; i++) {
