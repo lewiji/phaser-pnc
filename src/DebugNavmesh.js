@@ -160,19 +160,28 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 	 * @return {[type]} [description]
 	 */
 	graphCentroids: function () {
+		this.map = {};
+
 		for (var i = 0; i < this.finishedPolys.length; i++) {
 			var thisPoly = this.finishedPolys[i];
 			thisPoly.connectedPolys = [];
+			if (this.map[i] === undefined) { this.map[i] = {}; }
 			for (var j = 0; j < this.finishedPolys.length; j++) {
-				if (j !== i) {
+				if (i !== j) {
 					var testPoly = this.finishedPolys[j];
 					var intersects = this.testPolyPointIntersection(thisPoly, testPoly);
 					if (intersects) {
+						if (this.map[j] === undefined) { this.map[j] = {}; }
 						thisPoly.connectedPolys.push(j);
+						this.map[i][j] = Phaser.Math.distance(thisPoly.centroid.x, thisPoly.centroid.y, testPoly.centroid.x, testPoly.centroid.y);
+						this.map[j][i] = Phaser.Math.distance(thisPoly.centroid.x, thisPoly.centroid.y, testPoly.centroid.x, testPoly.centroid.y);
 					}
 				}
 			}
 		}
+		console.log(this.map);
+		this.graph = new Graph(this.map);
+		this.game.pncPlugin.signals.navGraphUpdated.dispatch(this.graph);
 	},
 	testPolyPointIntersection: function (poly1, poly2) {
 		for (var i = 0; i < poly2.points.length; i++) {
@@ -192,6 +201,7 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 		this.elOutput.value = this.welcomeString + JSON.stringify(this.finishedPolys);
 	},
 	drawPaths: function () {
+		if (this.finishedPolys.length == 0) { return; }
 		this.graphics.beginFill(0xFF3300);
 		this.graphics.lineStyle(2, 0xffd900, 1);
 		for (var i = 0; i < this.finishedPolys.length; i++) {
@@ -203,6 +213,7 @@ Phaser.Plugin.PNCAdventure.DebugNavmesh.prototype = {
 				this.graphics.lineTo(thatPoly.centroid.x, thatPoly.centroid.y);
 			}
 		}
+
 	},
 	drawPolyPoints: function () {
 		for (var i = 0; i < this.finishedPolys.length; i++) {

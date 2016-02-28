@@ -37,4 +37,26 @@ Phaser.Plugin.PNCAdventure.Actor.prototype.walkTo = function (point, walkSpeed) 
 		}, 
 		(distance * this.averageWalkSpeed) * (1 / walkSpeed)
 	).start();
-}
+};
+
+Phaser.Plugin.PNCAdventure.Actor.prototype.walkPath = function (path, polys, walkSpeed) {
+	if (!walkSpeed) {
+		walkSpeed = this.walkSpeed;
+	}
+	if (this.walkingTween) {
+		this.walkingTween.stop();
+	}
+	this.walkingTween = this.game.add.tween(this);
+	for (var i = 0; i < path.length; i++) {
+		var point = polys[path[i]].centroid;
+		var distance = Phaser.Math.distance(this.x, this.y, point.x, point.y);
+		this.walkingTween.to(
+			{
+				x: point.x,
+				y: point.y
+			},
+			(distance * this.averageWalkSpeed) * (1 / walkSpeed)
+		);
+	}
+	this.walkingTween.start();
+};

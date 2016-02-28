@@ -42,7 +42,6 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 	if (this.sceneDefinition.pathPolys) {
 		this.pathPolys = this.sceneDefinition.pathPolys;
 		this.loadJSONPolyData(this.sceneDefinition.pathPolys);
-
 	}
 
 	if (Phaser.Plugin.PNCAdventure.DebugNavmesh) {
@@ -53,6 +52,12 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 
 		this.game.pncPlugin.signals.navMeshUpdatedSignal.add(Phaser.Plugin.PNCAdventure.Scene.prototype.setNavmeshPolys, this);
 	}
+
+	this.game.pncPlugin.signals.navGraphUpdated.add(Phaser.Plugin.PNCAdventure.Scene.prototype.setNavGraph, this);
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.setNavGraph = function (graph) {
+	this.graph = graph;
 };
 
 Phaser.Plugin.PNCAdventure.Scene.prototype.addNavmeshPoly = function (poly) {
@@ -70,7 +75,11 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.loadJSONPolyData = function (data) {
 			data[i].points = data[i]._points;
 			data[i]._points = null;
 		}
-		this.navmesh.push(new Phaser.Polygon(data[i].points));
+
+		var poly = new Phaser.Polygon(data[i].points);
+		poly.centroid = data[i].centroid;
+
+		this.navmesh.push(poly);
 	}
 	if (!data.length && data[0].points) {
 		return;

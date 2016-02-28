@@ -39,6 +39,7 @@ Phaser.Plugin.PNCAdventure = function(game, parent) {
 	console.debug('Point and click adventure plugin initialised');
 	this.scenes = {};
 	this.initSignals();
+	this.navGraph;
 };
 
 Phaser.Plugin.PNCAdventure.prototype = Object.create(Phaser.Plugin.prototype);
@@ -50,8 +51,13 @@ Phaser.Plugin.PNCAdventure.prototype.constructor = Phaser.Plugin.PNCAdventure;
 Phaser.Plugin.PNCAdventure.prototype.initSignals = function () {
 	this.signals = {
 		sceneTappedSignal: new Phaser.Signal(),
-		playerMovementSignal: new Phaser.Signal()
+		playerMovementSignal: new Phaser.Signal(),
+		navGraphUpdated: new Phaser.Signal()
 	};
+
+	this.signals.navGraphUpdated.add(function (graph) {
+		this.navGraph = graph;
+	}, this);
 };
 
 /**
