@@ -52,27 +52,27 @@ Phaser.Plugin.PNCAdventure.Actor.prototype.walkPath = function (path, polys, fin
 	for (var i = 0; i < path.length; i++) {
 		var point = polys[path[i]].centroid;
 		var distance = Phaser.Math.distance(this.x, this.y, point.x, point.y);
-		if (distance != 0) {
-			this.walkingTween.to(
-				{
-					x: point.x,
-					y: point.y
-				},
-				(distance * this.averageWalkSpeed) * (1 / walkSpeed)
-			);
-		}
-	}
-	if (polys[path[path.length - 1]].contains(finalPoint)) {
-		var distance = Phaser.Math.distance(this.x, this.y, finalPoint.x, finalPoint.y);
-		if (distance != 0) {
+		if (i == path.length - 1 && polys[path[i]].contains(finalPoint.x, finalPoint.y)) {
 			this.walkingTween.to(
 				{
 					x: finalPoint.x,
 					y: finalPoint.y
 				},
-				(distance * this.averageWalkSpeed) * (1 / walkSpeed)
+				(distance * walkSpeed) / 10,
+				Phaser.Easing.Linear.None
 			);
-		}
+		} else {
+			if (distance != 0) {
+				this.walkingTween.to(
+					{
+						x: point.x,
+						y: point.y
+					},
+					(distance * walkSpeed) / 10,
+					Phaser.Easing.Linear.None
+				);
+			}
+		}		
 	}
 	
 

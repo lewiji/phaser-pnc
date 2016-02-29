@@ -13,6 +13,8 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype.constructor = Phaser.Plugin.PNC
 Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function () {
 	 this.game.pncPlugin.signals.sceneTappedSignal.add(function (pointer, pathPolys, graph) {
 	 	console.debug('Movement signal received');
+	 	if (!pathPolys) { return; }
+	 	this.targetPoly = undefined;
 	 	for (var i = 0; i < pathPolys.length; i++) {
 	 		if (pathPolys[i].contains(pointer.x, pointer.y)) {
 	 			this.targetPoly = i;
@@ -22,14 +24,18 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function 
 	 		}
 	 	}
 
+	 	if (this.targetPoly == undefined) {
+	 		return;
+	 	}
+
 		// pathfind
 		var path = this.game.pncPlugin.navGraph.findShortestPath(this.actorPoly, this.targetPoly);
 
 		if (path) {
 			if (path.length == 0) {
-				this.walkTo(pointer, 50);
+				this.walkTo(pointer, 35);
 			} else {
-				this.walkPath(path, pathPolys, pointer, 50);
+				this.walkPath(path, pathPolys, pointer, 35);
 			}
 		}
 
