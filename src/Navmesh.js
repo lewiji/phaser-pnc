@@ -121,7 +121,7 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 			}
 			
 
-			var thePath = this.grid.findPathWithFewestNodes('character', 'pointer');
+			var thePath = this.grid.findPath('character', 'pointer');
 
 			path = thePath.nodes;
 
@@ -132,6 +132,15 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 
 			for (var i = 0; i < crossingPoints.length; i++) {
 				this.grid.removeNodes('intersection'+i);
+			}
+		}
+
+		for (var i = 0; i < path.length; i++) {
+			if (path[i] && path[i+1]) {
+				if (Phaser.Math.distance(path[i].x, path[i].y, path[i+1].x, path[i+1].y) < 5) {
+					path.splice(i+1, 1);
+					i--;
+				}
 			}
 		}
 
