@@ -35,14 +35,57 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 	}
 	if (this.actors.length > 0) {
 		for (var i = 0; i < this.actors.length; i++) {
-			this.addActorToScene(this.actors[i]);
+			this.actors[i] = this.addActorToScene(this.actors[i]);
 		}
 	}
 
-	if (Phaser.Plugin.PNCAdventure.DebugNavmesh) {
-		this.navmeshTool = new Phaser.Plugin.PNCAdventure.DebugNavmesh(game);
-		this.addLayer('debug');
+	if (Phaser.Plugin.PNCAdventure.Navmesh) {
+		this.navmesh = new Phaser.Plugin.PNCAdventure.Navmesh(game);
+		if (this.sceneDefinition.navmeshPoints) {
+			this.navmeshPoints = this.sceneDefinition.navmeshPoints;
+			this.navmesh.loadPolygonFromNodes(this.navmeshPoints);
+		}
 	}
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.update = function () {
+	if (this.background.input.pointerOver()) {
+		this.navmesh.updatePointerLocation(this.background.input.pointerX(), this.background.input.pointerY());
+	}
+	this.navmesh.updateCharacterLocation(this.actors[0].x, this.actors[0].y);
+};
+
+
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.setNavGraph = function (graph) {
+	this.graph = graph;
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.addNavmeshPoly = function (poly) {
+	this.navmesh.push(poly);
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.setNavmeshPolys = function (navmeshPolys) {
+	this.navmesh = navmeshPolys;
+};
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.loadJSONPolyData = function (data) {
+	this.navmesh = [];
+	for (var i = 0; i < data.length; i++) {
+		if (data[i]._points) {
+			data[i].points = data[i]._points;
+			data[i]._points = null;
+		}
+
+		var poly = new Phaser.Polygon(data[i].points);
+		poly.centroid = data[i].centroid;
+
+		this.navmesh.push(poly);
+	}
+	if (!data.length && data[0].points) {
+		return;
+	}
+	
 };
 
 Phaser.Plugin.PNCAdventure.Scene.prototype.addLayer = function (name) {
@@ -73,7 +116,7 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.initBackground = function () {
 	this.layers.background.add(this.background);
 	this.background.inputEnabled = true;
 	this.background.events.onInputUp.add(function (sprite, pointer, g) {
-		this.game.pncPlugin.signals.sceneTappedSignal.dispatch(pointer);
+		this.game.pncPlugin.signals.sceneTappedSignal.dispatch(pointer, this.navmesh);
 	}, this);
 };
 
@@ -98,11 +141,17 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.initActor = function (actorDefinition
  * @param {Object} actorDefinition - the actor definition data
  */
 Phaser.Plugin.PNCAdventure.Scene.prototype.addActorToScene = function (actorDefinition) {
+	var actor;
+
 	if (actorDefinition.type === undefined) {
-		this.layers.actors.add(new Phaser.Plugin.PNCAdventure.Actor(this.game, actorDefinition));
+		actor = new Phaser.Plugin.PNCAdventure.Actor(this.game, actorDefinition)
+		this.layers.actors.add(actor);
 	} else {
-		this.layers.actors.add(new actorDefinition.type(this.game, actorDefinition));
+		actor = new actorDefinition.type(this.game, actorDefinition);
+		this.layers.actors.add(actor);
 	}
+
+	return actor;
 	
 };
 

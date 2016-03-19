@@ -11,8 +11,23 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype = Object.create(Phaser.Plugin.P
 Phaser.Plugin.PNCAdventure.PlayerActor.prototype.constructor = Phaser.Plugin.PNCAdventure.PlayerActor;
 
 Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function () {
-	 this.game.pncPlugin.signals.sceneTappedSignal.add(function (pointer) {
+	 this.game.pncPlugin.signals.sceneTappedSignal.add(function (pointer, navmesh) {
 	 	console.debug('Movement signal received');
-	 	this.walkTo(pointer);
+	 	if (!navmesh) { return; }
+
+	 	this.walkTween = this.game.add.tween(this);
+
+	 	var path = navmesh.findPath();
+	 	console.log(path);
+
+	 	var pointer;
+	 	for (var i = 0; i < path.length; i++) {
+	 		pointer = path[i];
+	 		var distance = Phaser.Math.distance(path[i-1] != undefined ? path[i-1].x : this.x, path[i-1] != undefined ? path[i-1].y : this.y, pointer.x, pointer.y);
+	 		this.walkTween.to({x: pointer.x, y: pointer.y}, distance * 4);
+	 	}
+
+	 	this.walkTween.start();
+	 	
 	 }, this);
 };
