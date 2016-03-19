@@ -113,7 +113,7 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 
 			this.grid.joinNodes('character', 'intersection0');
 
-			if (crossingPoints.length <= 1 || crossingPoints.length % 2 === 1) {
+			if (crossingPoints.length % 2 === 1) {
 				// if we're clicking in between a gap in the navgrid we don't want to bridge the last points
 				this.grid.joinNodes('pointer', this.nearestNodeToPointer.id);
 			} else {
@@ -138,7 +138,7 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 		// Cull very close points
 		for (var i = 0; i < path.length; i++) {
 			if (path[i] && path[i+1]) {
-				if (Phaser.Math.distance(path[i].x, path[i].y, path[i+1].x, path[i+1].y) < 10) {
+				if (Phaser.Math.distance(path[i].x, path[i].y, path[i+1].x, path[i+1].y) <= 1) {
 					path.splice(i+1, 1);
 					i--;
 				}
