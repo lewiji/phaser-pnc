@@ -15,6 +15,10 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function 
 	 	console.debug('Movement signal received');
 	 	if (!navmesh) { return; }
 
+	 	if (this.walkTween && this.walkTween.isRunning) {
+	 		this.walkTween.stop();
+	 	}
+
 	 	this.walkTween = this.game.add.tween(this);
 
 	 	var path = navmesh.findPath();
