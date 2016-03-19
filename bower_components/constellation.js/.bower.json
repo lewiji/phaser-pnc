@@ -1,0 +1,14 @@
+{
+  "name": "constellation.js",
+  "homepage": "https://github.com/gmac/constellation.js",
+  "_release": "eee67d3642",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "eee67d364257b7611e016db0e027f97bb63eac38"
+  },
+  "_source": "https://github.com/gmac/constellation.js.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/gmac/constellation.js.git",
+  "_direct": true
+}
