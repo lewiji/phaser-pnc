@@ -21,7 +21,7 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 	},
 	initGraphics: function () {
 		this.graphics = this.game.add.graphics(0, 0);
-		this.graphics.alpha = 0.5;
+		this.graphics.alpha = 0.2;
 	},
 	removeSignals: function () {
 		this.confirmKey.onDown.remove(this.addPolygon, this);
@@ -44,6 +44,7 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 		this.edgeDistanceThreshold = 10;
 		this.pointerLocation = {x: 0, y: 0};
 		this.characterLocation = {x: 0, y: 0};
+		this.realPointerLocation = {x: 0, y: 0};
 		this.nearestNodeToPointer = null;
 		this.intersectorLine = new Phaser.Line(0, 0, 0, 0);
 	},
@@ -61,8 +62,8 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 		
 	},
 	findPath: function () {
-		this.characterNodeId = this.grid.addNode(this.characterLocation.x, this.characterLocation.y, {id: 'character'});
-		this.pointerNodeId = this.grid.addNode(this.pointerLocation.x, this.pointerLocation.y, {id: 'pointer'});
+		this.characterNode = this.grid.addNode(this.characterLocation.x, this.characterLocation.y, {id: 'character'});
+		this.pointerNode = this.grid.addNode(this.pointerLocation.x, this.pointerLocation.y, {id: 'pointer'});
 
 		var lineOfSightPoints = this.intersectorLine.coordinatesOnLine();
 
@@ -105,14 +106,19 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 				}
 
 				// exit points
-				if (i % 2 === 0 && i > 0) {
+				if (i % 2 === 0 && i > 0 && i < crossingPoints.length - 1) {
 					this.grid.joinNodes('intersection' + (i - 1), 'intersection'+i);
 				}
 			}
 
 			this.grid.joinNodes('character', 'intersection0');
 
-			this.grid.joinNodes('pointer', 'intersection' + (crossingPoints.length - 1));
+			if (Phaser.Math.distance(this.characterNode.x, this.characterNode.y, this.pointerNode.x, this.pointerNode.y) > Phaser.Math.distance(this.characterNode.x, this.characterNode.y, this.realPointerLocation.x, this.realPointerLocation.y)) {
+				this.grid.joinNodes('pointer', this.nearestNodeToPointer.id);
+			} else {
+				this.grid.joinNodes('pointer', 'intersection' + (crossingPoints.length - 1));
+			}
+			
 
 			var thePath = this.grid.findPath('character', 'pointer');
 
@@ -251,14 +257,17 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 		var inGrid = this.grid.hitTestPointInPolygons({x: x, y: y});
 		var pointer;
 		if (!inGrid) {
+			this.pointerInGrid = false;
 			pointer = this.grid.snapPointToGrid({x: x, y: y});
 			pointer = pointer.point;
 		} else {
+			this.pointerInGrid = true;
 			pointer = new Const.Point(x, y);
 		}
 
 		this.intersectorLine.setTo(this.characterLocation.x, this.characterLocation.y, pointer.x, pointer.y);
 		
+		this.realPointerLocation = {x: x, y: y};
 		this.pointerLocation = {x: pointer.x, y: pointer.y};
 		this.nearestNodeToPointer = this.grid.getNearestNodeToPoint(this.pointerLocation);
 		this.drawAll();

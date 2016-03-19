@@ -28,7 +28,7 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function 
 	 	for (var i = 0; i < path.length; i++) {
 	 		pointer = path[i];
 	 		var distance = Phaser.Math.distance(path[i-1] != undefined ? path[i-1].x : this.x, path[i-1] != undefined ? path[i-1].y : this.y, pointer.x, pointer.y);
-	 		var tween = this.walkTween.to({x: pointer.x, y: pointer.y}, distance * 4);
+	 		var tween = this.walkTween.to({x: pointer.x, y: pointer.y}, distance * 4.5);
 	 		tween.onStart.add(function(sprite, tween, point) {
 	 			if (this.x > point.x) {
 	 				this.scale.setTo(-1, 1);
