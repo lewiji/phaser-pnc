@@ -103,7 +103,11 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 				for (var j = 0; j < snap.segment.length; j++) {
 					this.grid.joinNodes('intersection'+i, snap.segment[j]);
 				}
-				
+
+				// exit points
+				if (i % 2 === 0 && i > 0) {
+					this.grid.joinNodes('intersection' + (i - 1), 'intersection'+i);
+				}
 			}
 
 			this.grid.joinNodes('character', 'intersection0');
