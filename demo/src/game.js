@@ -4,7 +4,7 @@ var pncgame = function (game) {
 
 pncgame.prototype = {
 	preload: function () {
-		this.game.load.image('player', 'img/p1_front.png');
+		this.game.load.atlasJSONArray('bernard', 'img/bernard-0.png', 'img/bernard.json');
 	},
 	create: function () {
 		var sceneDefinition = {
@@ -18,7 +18,11 @@ pncgame.prototype = {
 		var actor = this.game.pncPlugin.addActor(room, {
 				x: 250,
 				y: 170,
-				image: 'player',
+				image: 'bernard',
+				animations: {
+					idle: Phaser.Animation.generateFrameNames('bernard', 1, 1, '.png', 2),
+					walk: Phaser.Animation.generateFrameNames('bernard', 8, 13, '.png', 2)
+				},
 				type: Phaser.Plugin.PNCAdventure.PlayerActor
 		});
 	}

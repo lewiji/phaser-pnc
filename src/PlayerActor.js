@@ -28,8 +28,23 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function 
 	 	for (var i = 0; i < path.length; i++) {
 	 		pointer = path[i];
 	 		var distance = Phaser.Math.distance(path[i-1] != undefined ? path[i-1].x : this.x, path[i-1] != undefined ? path[i-1].y : this.y, pointer.x, pointer.y);
-	 		this.walkTween.to({x: pointer.x, y: pointer.y}, distance * 4);
+	 		var tween = this.walkTween.to({x: pointer.x, y: pointer.y}, distance * 4);
+	 		tween.onStart.add(function(sprite, tween, point) {
+	 			if (this.x > point.x) {
+	 				this.scale.setTo(-1, 1);
+	 			} else {
+	 				this.scale.setTo(1, 1);
+	 			}
+	 		}, this, 0, pointer);
 	 	}
+
+	 	this.walkTween.onStart.add(function () {
+	 		this.animations.play('walk', null, true);
+	 	}, this);
+
+	 	this.walkTween.onComplete.add(function () {
+	 		this.animations.play('idle');
+	 	}, this);
 
 	 	this.walkTween.start();
 	 	

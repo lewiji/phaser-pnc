@@ -11,7 +11,12 @@ Phaser.Plugin.PNCAdventure.Actor = function (game, actorDefinition) {
 		};
 	}
 	Phaser.Sprite.call(this, game, actorDefinition.x, actorDefinition.y, actorDefinition.image, actorDefinition.frame);
+
 	this.anchor.setTo(0.5, 1);
+
+	if (actorDefinition.animations) {
+		this.createAnimations(actorDefinition.animations);
+	}
 
 	this.walkSpeed = 50;
 	this.averageWalkSpeed = 100;
@@ -21,6 +26,13 @@ Phaser.Plugin.PNCAdventure.Actor = function (game, actorDefinition) {
 
 Phaser.Plugin.PNCAdventure.Actor.prototype = Object.create(Phaser.Sprite.prototype);
 Phaser.Plugin.PNCAdventure.Actor.prototype.constructor = Phaser.Plugin.PNCAdventure.Actor;
+
+Phaser.Plugin.PNCAdventure.Actor.prototype.createAnimations = function (animationData) {
+	for (var animationName in animationData) {
+		var animation = this.animations.add(animationName, animationData[animationName], 10, false, false);
+		console.log(animation);
+	}
+};
 
 Phaser.Plugin.PNCAdventure.Actor.prototype.walkTo = function (point, walkSpeed) {
 	if (!walkSpeed) {
