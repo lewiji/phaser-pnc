@@ -64,7 +64,7 @@ Phaser.Plugin.PNCAdventure.Navmesh.prototype = {
 		this.characterNodeId = this.grid.addNode(this.characterLocation.x, this.characterLocation.y, {id: 'character'});
 		this.pointerNodeId = this.grid.addNode(this.pointerLocation.x, this.pointerLocation.y, {id: 'pointer'});
 
-		var lineOfSightPoints = this.intersectorLine.coordinatesOnLine(3);
+		var lineOfSightPoints = this.intersectorLine.coordinatesOnLine();
 
 		lineOfSightPoints.pop();
 		lineOfSightPoints.shift();

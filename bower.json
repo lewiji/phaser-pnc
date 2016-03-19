@@ -22,6 +22,7 @@
     "tests"
   ],
   "dependencies": {
-    "phaser": "^2.4.6"
+    "phaser": "^2.4.6",
+    "git@github.com:lewispollard/constellation.js.git": "latest"
   }
 }
