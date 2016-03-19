@@ -35,26 +35,27 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.create = function () {
 	}
 	if (this.actors.length > 0) {
 		for (var i = 0; i < this.actors.length; i++) {
-			this.addActorToScene(this.actors[i]);
+			this.actors[i] = this.addActorToScene(this.actors[i]);
 		}
 	}
 
-	if (this.sceneDefinition.pathPolys) {
-		this.pathPolys = this.sceneDefinition.pathPolys;
-		this.loadJSONPolyData(this.sceneDefinition.pathPolys);
-	}
-
-	if (Phaser.Plugin.PNCAdventure.DebugNavmesh) {
-		this.navmeshTool = new Phaser.Plugin.PNCAdventure.DebugNavmesh(game);
-		if (this.sceneDefinition.pathPolys) {
-			this.navmeshTool.loadJSONPolyData(this.sceneDefinition.pathPolys);
+	if (Phaser.Plugin.PNCAdventure.Navmesh) {
+		this.navmesh = new Phaser.Plugin.PNCAdventure.Navmesh(game);
+		if (this.sceneDefinition.navmeshPoints) {
+			this.navmeshPoints = this.sceneDefinition.navmeshPoints;
+			this.navmesh.loadPolygonFromNodes(this.navmeshPoints);
 		}
-
-		this.game.pncPlugin.signals.navMeshUpdatedSignal.add(Phaser.Plugin.PNCAdventure.Scene.prototype.setNavmeshPolys, this);
 	}
-
-	this.game.pncPlugin.signals.navGraphUpdated.add(Phaser.Plugin.PNCAdventure.Scene.prototype.setNavGraph, this);
 };
+
+Phaser.Plugin.PNCAdventure.Scene.prototype.update = function () {
+	if (this.background.input.pointerOver()) {
+		this.navmesh.updatePointerLocation(this.background.input.pointerX(), this.background.input.pointerY());
+	}
+	this.navmesh.updateCharacterLocation(this.actors[0].x, this.actors[0].y);
+};
+
+
 
 Phaser.Plugin.PNCAdventure.Scene.prototype.setNavGraph = function (graph) {
 	this.graph = graph;
@@ -140,11 +141,17 @@ Phaser.Plugin.PNCAdventure.Scene.prototype.initActor = function (actorDefinition
  * @param {Object} actorDefinition - the actor definition data
  */
 Phaser.Plugin.PNCAdventure.Scene.prototype.addActorToScene = function (actorDefinition) {
+	var actor;
+
 	if (actorDefinition.type === undefined) {
-		this.layers.actors.add(new Phaser.Plugin.PNCAdventure.Actor(this.game, actorDefinition));
+		actor = new Phaser.Plugin.PNCAdventure.Actor(this.game, actorDefinition)
+		this.layers.actors.add(actor);
 	} else {
-		this.layers.actors.add(new actorDefinition.type(this.game, actorDefinition));
+		actor = new actorDefinition.type(this.game, actorDefinition);
+		this.layers.actors.add(actor);
 	}
+
+	return actor;
 	
 };
 

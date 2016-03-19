@@ -11,35 +11,23 @@ Phaser.Plugin.PNCAdventure.PlayerActor.prototype = Object.create(Phaser.Plugin.P
 Phaser.Plugin.PNCAdventure.PlayerActor.prototype.constructor = Phaser.Plugin.PNCAdventure.PlayerActor;
 
 Phaser.Plugin.PNCAdventure.PlayerActor.prototype.initSignalListeners = function () {
-	 this.game.pncPlugin.signals.sceneTappedSignal.add(function (pointer, pathPolys, graph) {
+	 this.game.pncPlugin.signals.sceneTappedSignal.add(function (pointer, navmesh) {
 	 	console.debug('Movement signal received');
-	 	if (!pathPolys) { return; }
-	 	this.targetPoly = undefined;
-	 	for (var i = 0; i < pathPolys.length; i++) {
-	 		if (pathPolys[i].contains(pointer.x, pointer.y)) {
-	 			this.targetPoly = i;
-	 		}
-	 		if (pathPolys[i].contains(this.x, this.y)) {
-	 			this.actorPoly = i;
-	 		}
+	 	if (!navmesh) { return; }
+
+	 	this.walkTween = this.game.add.tween(this);
+
+	 	var path = navmesh.findPath();
+	 	console.log(path);
+
+	 	var pointer;
+	 	for (var i = 0; i < path.length; i++) {
+	 		pointer = path[i];
+	 		var distance = Phaser.Math.distance(path[i-1] != undefined ? path[i-1].x : this.x, path[i-1] != undefined ? path[i-1].y : this.y, pointer.x, pointer.y);
+	 		this.walkTween.to({x: pointer.x, y: pointer.y}, distance * 4);
 	 	}
 
-	 	if (this.targetPoly == undefined) {
-	 		return;
-	 	}
-
-		// pathfind
-		var path = this.game.pncPlugin.navGraph.findShortestPath(this.actorPoly, this.targetPoly);
-
-		if (path) {
-			if (path.length == 0) {
-				this.walkTo(pointer, 35);
-			} else {
-				this.walkPath(path, pathPolys, pointer, 35);
-			}
-		}
-
-		console.log(path);
+	 	this.walkTween.start();
 	 	
 	 }, this);
 };
